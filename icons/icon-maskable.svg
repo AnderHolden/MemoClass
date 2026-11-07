@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!--
+    MemoClass AI - Maskable Icon for Android PWA
+    Autores / Desarrolladores: Iván Andrés Urbano Rivera y Lucy Adriana Muñoz Cabrera
+  -->
+  <defs>
+    <linearGradient id="bgMask" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#312E81" />
+      <stop offset="50%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#7C3AED" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bgMask)" />
+  <g transform="translate(52, 52) scale(0.8)">
+    <rect x="108" y="96" width="268" height="328" rx="32" fill="#FFFFFF" />
+    <rect x="144" y="164" width="120" height="18" rx="9" fill="#4F46E5" />
+    <rect x="144" y="204" width="188" height="14" rx="7" fill="#94A3B8" />
+    <rect x="144" y="236" width="164" height="14" rx="7" fill="#94A3B8" />
+    <circle cx="158" cy="292" r="15" fill="#10B981" />
+    <rect x="186" y="285" width="136" height="14" rx="7" fill="#334155" />
+    <circle cx="158" cy="340" r="15" fill="#10B981" />
+    <rect x="186" y="333" width="112" height="14" rx="7" fill="#334155" />
+    <circle cx="364" cy="348" r="72" fill="#1E1B4B" stroke="#FFFFFF" stroke-width="8" />
+    <path d="M364 298C367.5 324 380 336.5 406 340C380 343.5 367.5 356 364 382C360.5 356 348 343.5 322 340C348 336.5 360.5 324 364 298Z" fill="#F59E0B" />
+  </g>
+</svg>

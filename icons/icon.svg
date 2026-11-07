@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!--
+    MemoClass AI - Identidad Visual Profesional
+    Autores / Desarrolladores: Iván Andrés Urbano Rivera y Lucy Adriana Muñoz Cabrera
+  -->
+  <defs>
+    <linearGradient id="brandSurface" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+    <linearGradient id="accentCobalt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563EB" />
+      <stop offset="100%" stop-color="#1D4ED8" />
+    </linearGradient>
+  </defs>
+
+  <!-- Base cuadrada con curvatura continua tipo iOS/Android -->
+  <rect width="512" height="512" rx="116" fill="url(#brandSurface)" />
+  <rect x="16" y="16" width="480" height="480" rx="102" fill="none" stroke="#334155" stroke-width="2" stroke-opacity="0.6" />
+
+  <!-- Hoja editorial posterior -->
+  <rect x="148" y="104" width="244" height="296" rx="24" fill="#334155" opacity="0.55" transform="rotate(5 270 252)" />
+
+  <!-- Hoja principal de estudio -->
+  <rect x="120" y="108" width="252" height="300" rx="24" fill="#F8FAFC" />
+
+  <!-- Encabezado azul cobalto académico -->
+  <rect x="152" y="148" width="88" height="12" rx="6" fill="#2563EB" />
+
+  <!-- Líneas tipográficas limpias -->
+  <rect x="152" y="182" width="188" height="10" rx="5" fill="#0F172A" />
+  <rect x="152" y="206" width="164" height="10" rx="5" fill="#64748B" />
+  <rect x="152" y="230" width="176" height="10" rx="5" fill="#64748B" />
+
+  <!-- Lista de verificación estructurada -->
+  <rect x="152" y="272" width="22" height="22" rx="6" fill="#059669" />
+  <path d="M158 283.5L161.5 287L168.5 279.5" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <rect x="186" y="278" width="132" height="10" rx="5" fill="#1E293B" />
+
+  <rect x="152" y="312" width="22" height="22" rx="6" fill="#059669" />
+  <path d="M158 323.5L161.5 327L168.5 319.5" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <rect x="186" y="318" width="108" height="10" rx="5" fill="#1E293B" />
+
+  <!-- Insignia de síntesis inteligente -->
+  <circle cx="364" cy="360" r="64" fill="url(#accentCobalt)" stroke="#0F172A" stroke-width="10" />
+  <path d="M364 322L371.5 348.5L398 356L371.5 363.5L364 390L356.5 363.5L330 356L356.5 348.5L364 322Z" fill="#FFFFFF" />
+</svg>

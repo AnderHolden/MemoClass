@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  MemoClass AI — Progressive Web App (PWA) Educativa con Inteligencia Artificial
+  ============================================================================
+  Autores y Desarrolladores Oficiales:
+    - Iván Andrés Urbano Rivera
+    - Lucy Adriana Muñoz Cabrera
+
+  Planteamiento del Problema:
+    Los estudiantes sufren problemas de retención de memoria y pérdida de
+    información porque durante las clases deben prestar atención y tomar
+    apuntes "a la ligera" simultáneamente, lo que genera notas incompletas y
+    difíciles de entender después. MemoClass AI utiliza Inteligencia Artificial
+    para transformar esos apuntes rápidos y desordenados en un plan de estudio
+    estructurado con: lo que se aprendió, conceptos clave, tareas de refuerzo
+    con listas de chequeo interactivas y tarjetas de memoria (flashcards).
+  ============================================================================
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <title>MemoClass AI — Planificador de Estudio Inteligente</title>
+
+  <!-- Metadatos Oficiales de Autoría y Proyecto -->
+  <meta name="author" content="Iván Andrés Urbano Rivera, Lucy Adriana Muñoz Cabrera" />
+  <meta name="creator" content="Iván Andrés Urbano Rivera y Lucy Adriana Muñoz Cabrera" />
+  <meta name="publisher" content="Iván Andrés Urbano Rivera & Lucy Adriana Muñoz Cabrera" />
+  <meta name="description" content="PWA educativa con Inteligencia Artificial que transforma apuntes rápidos de clase en un plan de estudio estructurado. Creada por Iván Andrés Urbano Rivera y Lucy Adriana Muñoz Cabrera." />
+  <meta name="keywords" content="MemoClass AI, educación, apuntes de clase, inteligencia artificial, Gemini, plan de estudio, flashcards, PWA, Iván Andrés Urbano Rivera, Lucy Adriana Muñoz Cabrera" />
+
+  <!-- Configuración PWA Mobile-First (Android / Moto G & iOS) -->
+  <meta name="theme-color" content="#2563EB" />
+  <meta name="background-color" content="#F1F5F9" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="MemoClass AI" />
+
+  <!-- Manifiesto e Íconos PWA -->
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
+  <link rel="alternate icon" type="image/png" href="./icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+
+  <!-- Tipografía Amigable, Redondeada y de Alta Legibilidad -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Estilos críticos en línea para garantizar alto contraste inmediato -->
+  <style>
+    html, body {
+      background-color: #F1F5F9 !important;
+      color: #0F172A !important;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    }
+  </style>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Hoja de estilos profesional de alto contraste -->
+  <link rel="stylesheet" href="./styles.css?v=3.0" />
+</head>
+<body class="bg-[#F1F5F9] text-[#0F172A] font-sans antialiased selection:bg-blue-600 selection:text-white">
+
+  <!-- ========================================================================
+       BARRA SUPERIOR FIJA (APP BAR CLARA Y AMIGABLE)
+       ======================================================================== -->
+  <header class="app-bar-surface fixed top-0 left-0 right-0 z-40">
+    <div class="max-w-4xl mx-auto px-3.5 sm:px-6 h-16 flex items-center justify-between gap-2">
+      <!-- Identidad de la App -->
+      <div class="flex items-center gap-2.5 min-w-0">
+        <button
+          id="btn-logo-home"
+          type="button"
+          class="relative flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-600 p-0.5 shadow-sm hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500"
+          title="Ir a Nueva Clase"
+        >
+          <img src="./icons/icon.svg" alt="Logo MemoClass AI" class="w-full h-full rounded-[10px] object-cover" />
+        </button>
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5">
+            <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-slate-900 whitespace-nowrap leading-none">
+              MemoClass <span class="text-blue-600">AI</span>
+            </h1>
+          </div>
+          <div id="ai-mode-badge" class="flex items-center gap-1.5 mt-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></span>
+            <span id="ai-mode-text" class="text-[11px] font-semibold text-slate-600 whitespace-nowrap">
+              IA Lista
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones de la Barra Superior -->
+      <div class="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+        <!-- Botón Instalar App PWA -->
+        <button
+          id="btn-install-pwa"
+          type="button"
+          class="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl text-xs font-bold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 transition active:scale-95"
+          title="Instalar aplicación MemoClass AI en el celular"
+        >
+          <svg class="w-3.5 h-3.5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V3" />
+          </svg>
+          <span>Instalar</span>
+        </button>
+
+        <!-- Botón Configurar API Key de Gemini -->
+        <button
+          id="btn-open-api-modal"
+          type="button"
+          class="inline-flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition active:scale-95"
+          title="Configurar API Key de Google Gemini (gemini-2.5-flash)"
+        >
+          <svg class="w-4 h-4 text-slate-600 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <span class="hidden sm:inline">API IA</span>
+        </button>
+
+        <!-- Botón Acerca de / Créditos (OBLIGATORIO) -->
+        <button
+          id="btn-open-credits-modal"
+          type="button"
+          class="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition active:scale-95"
+          title="Acerca de MemoClass AI y Créditos de Autoría"
+        >
+          <svg class="w-3.5 h-3.5 text-white flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>Créditos</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       CONTENEDOR PRINCIPAL DE VISTAS
+       ======================================================================== -->
+  <main class="max-w-4xl mx-auto pt-20 pb-8 px-3.5 sm:px-6">
+
+    <!-- Notificación Toast Flotante Clara -->
+    <div id="toast-container" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md pointer-events-none transition-all duration-300 opacity-0 -translate-y-2">
+      <div id="toast-box" class="pointer-events-auto flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-white text-sm font-bold text-slate-900 shadow-xl border-2 border-blue-500">
+        <span id="toast-icon" class="w-2.5 h-2.5 rounded-full bg-blue-600 flex-shrink-0"></span>
+        <p id="toast-message" class="flex-1">Listo</p>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         VISTA 1: "NUEVA CLASE" (HOJA DE CAPTURA RÁPIDA DE APUNTES)
+         ====================================================================== -->
+    <section id="view-nueva-clase" class="view-section active" aria-labelledby="heading-nueva-clase">
+
+      <!-- Encabezado Amigable de la Vista -->
+      <div class="mb-5">
+        <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 mb-2">
+          Asistente de Estudio Post-Clase
+        </span>
+        <h2 id="heading-nueva-clase" class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+          Convierte tus apuntes rápidos en un plan de estudio claro
+        </h2>
+        <p class="text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
+          Escribe o dicta por voz las ideas sueltas que anotaste durante la clase. La Inteligencia Artificial organizará por ti qué se aprendió, los conceptos clave, qué debes repasar y 3 tarjetas de memoria.
+        </p>
+      </div>
+
+      <!-- Hoja de Apuntes Unificada -->
+      <div class="note-sheet">
+        <!-- Barra Superior: Ejemplos de Demostración -->
+        <div class="note-sheet-header px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-2.5">
+          <div class="flex flex-wrap items-center gap-1.5">
+            <span class="text-xs font-bold text-slate-600 mr-1">
+              Ejemplos listos:
+            </span>
+            <button type="button" data-example-index="0" class="example-chip px-3 py-1.5 rounded-lg text-xs font-bold bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-300 transition">
+              Biología Celular
+            </button>
+            <button type="button" data-example-index="1" class="example-chip px-3 py-1.5 rounded-lg text-xs font-bold bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-300 transition">
+              Física Mecánica
+            </button>
+            <button type="button" data-example-index="2" class="example-chip px-3 py-1.5 rounded-lg text-xs font-bold bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-300 transition">
+              Ingeniería de Software
+            </button>
+          </div>
+
+          <!-- Botón Cargar Ejemplo de Prueba -->
+          <button
+            id="btn-load-example"
+            type="button"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition active:scale-95"
+          >
+            <svg class="w-4 h-4 text-white flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span>Cargar ejemplo de prueba</span>
+          </button>
+        </div>
+
+        <!-- Formulario de Captura -->
+        <form id="form-nueva-clase" class="p-4 sm:p-6 space-y-5 bg-white" novalidate>
+          <!-- Campo 1: Materia o Tema -->
+          <div>
+            <label for="input-subject" class="block text-sm font-bold text-slate-800 mb-1.5">
+              Nombre de la materia o tema de la clase
+            </label>
+            <input
+              id="input-subject"
+              type="text"
+              required
+              placeholder="Ej. Biología Celular: Ciclo Celular y Mitosis"
+              class="w-full px-4 py-3 rounded-xl bg-slate-50 focus:bg-white border border-slate-300 text-slate-900 placeholder-slate-400 text-base font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            />
+          </div>
+
+          <!-- Campo 2: Área de Apuntes + Dictado por Voz -->
+          <div>
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <label for="input-notes" class="block text-sm font-bold text-slate-800">
+                Apuntes rápidos tomados en clase
+              </label>
+
+              <!-- Botón de Dictado por Voz -->
+              <button
+                id="btn-voice-dictation"
+                type="button"
+                class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition active:scale-95"
+                title="Dictar apuntes hablando al micrófono del celular"
+              >
+                <svg id="voice-mic-icon" class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                </svg>
+                <span id="voice-btn-text">Dictado por Voz</span>
+              </button>
+            </div>
+
+            <!-- Estado en vivo del Dictado por Voz -->
+            <div id="voice-status-banner" class="hidden mb-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200 flex items-center justify-between gap-2 text-xs text-red-800">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-red-600 animate-ping"></span>
+                <span id="voice-status-text" class="font-bold">Escuchando tu voz... Habla claramente cerca del micrófono.</span>
+              </div>
+              <button id="btn-stop-voice" type="button" class="px-3 py-1 rounded-lg bg-red-600 text-white font-bold text-xs">
+                Detener
+              </button>
+            </div>
+
+            <textarea
+              id="input-notes"
+              rows="7"
+              required
+              placeholder="Escribe o dicta aquí tus notas rápidas, palabras sueltas o dudas de la clase...&#10;&#10;Ejemplo: prof explicó mitosis vs meiosis... fases PMAT (profase, metafase, anafase, telofase). En metafase cromosomas al ecuador?? huso mitótico importante para separar cromátidas hermanas. Ojo: repasar diferencia citocinesis animal y vegetal para el quiz del martes."
+              class="w-full p-4 rounded-xl bg-slate-50 focus:bg-white border border-slate-300 text-slate-900 placeholder-slate-400 text-base leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition resize-y"
+            ></textarea>
+
+            <div class="mt-2 flex items-center justify-between text-xs font-semibold text-slate-500">
+              <span id="notes-counter">0 palabras • 0 caracteres</span>
+              <button id="btn-clear-form" type="button" class="text-slate-600 hover:text-red-600 font-bold transition">
+                Limpiar campos
+              </button>
+            </div>
+          </div>
+
+          <!-- Botón Principal: Generar Plan de Estudio con IA -->
+          <div class="pt-1">
+            <button
+              id="btn-generate-plan"
+              type="submit"
+              class="w-full py-4 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-base shadow-md shadow-blue-600/20 flex items-center justify-center gap-2.5 transition active:scale-[0.99]"
+            >
+              <svg id="generate-icon" class="w-5 h-5 text-white flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <span id="generate-btn-label">Generar Plan de Estudio con IA</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Estado de Procesamiento IA -->
+      <div id="ai-loading-card" class="hidden paper-card p-6 mt-5 text-center space-y-3">
+        <div class="w-12 h-12 mx-auto rounded-full bg-blue-50 border border-blue-200 flex items-center justify-center">
+          <svg class="w-6 h-6 text-blue-600 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+          </svg>
+        </div>
+        <div>
+          <h3 id="ai-loading-title" class="text-base font-extrabold text-slate-900">
+            Organizando tu plan de estudio...
+          </h3>
+          <p id="ai-loading-step" class="text-xs sm:text-sm text-slate-600 mt-0.5">
+            Construyendo resumen, glosario de conceptos, tareas de repaso y tarjetas de memoria.
+          </p>
+        </div>
+      </div>
+
+      <!-- Resumen de los 4 Bloques -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5">
+        <div class="paper-card p-4">
+          <span class="inline-block px-2 py-0.5 rounded-md text-[11px] font-bold bg-blue-100 text-blue-800">Paso 1</span>
+          <div class="text-sm font-extrabold text-slate-900 mt-1.5">Lo que se aprendió</div>
+          <p class="text-xs text-slate-600 mt-0.5">Resumen claro de la clase</p>
+        </div>
+        <div class="paper-card p-4">
+          <span class="inline-block px-2 py-0.5 rounded-md text-[11px] font-bold bg-indigo-100 text-indigo-800">Paso 2</span>
+          <div class="text-sm font-extrabold text-slate-900 mt-1.5">Conceptos clave</div>
+          <p class="text-xs text-slate-600 mt-0.5">Glosario fácil de repasar</p>
+        </div>
+        <div class="paper-card p-4">
+          <span class="inline-block px-2 py-0.5 rounded-md text-[11px] font-bold bg-amber-100 text-amber-800">Paso 3</span>
+          <div class="text-sm font-extrabold text-slate-900 mt-1.5">Qué reforzar</div>
+          <p class="text-xs text-slate-600 mt-0.5">Vacíos y lista de tareas</p>
+        </div>
+        <div class="paper-card p-4">
+          <span class="inline-block px-2 py-0.5 rounded-md text-[11px] font-bold bg-emerald-100 text-emerald-800">Paso 4</span>
+          <div class="text-sm font-extrabold text-slate-900 mt-1.5">Flashcards 3D</div>
+          <p class="text-xs text-slate-600 mt-0.5">3 tarjetas interactivas</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         VISTA 2: "PLAN DE ESTUDIO" (RESULTADO EN 4 BLOQUES CLAROS)
+         ====================================================================== -->
+    <section id="view-plan-estudio" class="view-section" aria-labelledby="heading-plan-estudio">
+
+      <!-- Estado vacío si aún no hay un plan abierto -->
+      <div id="plan-empty-state" class="paper-card p-8 text-center space-y-4">
+        <div class="w-14 h-14 mx-auto rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+        </div>
+        <div class="space-y-1">
+          <h2 class="text-xl font-extrabold text-slate-900">
+            Aún no has generado un Plan de Estudio
+          </h2>
+          <p class="text-sm text-slate-600 max-w-md mx-auto">
+            Escribe tus apuntes en la pestaña <strong>"Nueva Clase"</strong> o prueba con un ejemplo automático para ver tu plan completo.
+          </p>
+        </div>
+        <div class="flex flex-wrap justify-center gap-3 pt-1">
+          <button id="btn-empty-go-new" type="button" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold transition">
+            Ir a Nueva Clase
+          </button>
+          <button id="btn-empty-demo" type="button" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 text-sm font-bold transition">
+            Cargar ejemplo automático
+          </button>
+        </div>
+      </div>
+
+      <!-- Contenedor Activo del Plan de Estudio -->
+      <div id="plan-active-content" class="hidden space-y-5">
+
+        <!-- Cabecera del Plan de Estudio + Barra de Progreso -->
+        <div class="paper-card p-5 sm:p-6">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div class="space-y-1.5">
+              <div class="flex flex-wrap items-center gap-2">
+                <span id="plan-engine-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800">
+                  Plan Generado con IA
+                </span>
+                <span id="plan-date-badge" class="text-xs font-semibold text-slate-500">
+                  Hoy
+                </span>
+              </div>
+              <h2 id="heading-plan-estudio" class="text-xl sm:text-2xl font-extrabold text-slate-900 leading-snug">
+                Materia de la Clase
+              </h2>
+            </div>
+
+            <!-- Botones de Acción del Plan -->
+            <div class="flex items-center gap-2">
+              <button
+                id="btn-copy-plan"
+                type="button"
+                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 transition"
+                title="Copiar plan de estudio al portapapeles"
+              >
+                <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                <span>Copiar</span>
+              </button>
+              <button
+                id="btn-new-from-plan"
+                type="button"
+                class="inline-flex items-center gap-1 px-3.5 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white transition"
+              >
+                <span>+ Nueva Clase</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Barra de Progreso de Estudio y Refuerzo -->
+          <div class="mt-4 pt-4 border-t border-slate-200">
+            <div class="flex items-center justify-between text-xs sm:text-sm font-bold mb-2">
+              <span class="text-slate-700">Tu progreso de estudio para la próxima clase</span>
+              <span id="plan-progress-label" class="text-emerald-700 font-extrabold">0% completado (0/0)</span>
+            </div>
+            <div class="w-full h-3 rounded-full bg-slate-200 overflow-hidden">
+              <div id="plan-progress-bar" class="progress-bar-fill h-full rounded-full bg-emerald-600" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Desplegable de Apuntes Originales -->
+          <details class="mt-4 group">
+            <summary class="cursor-pointer text-xs sm:text-sm font-bold text-blue-700 hover:text-blue-800 flex items-center gap-1.5 select-none">
+              <svg class="w-4 h-4 text-blue-600 group-open:rotate-90 transition-transform" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+              <span>Ver los apuntes rápidos originales de esta clase</span>
+            </summary>
+            <div id="plan-raw-notes" class="mt-2.5 p-4 rounded-xl bg-slate-100 border border-slate-200 text-sm text-slate-800 whitespace-pre-line leading-relaxed">
+            </div>
+          </details>
+        </div>
+
+        <!-- ==================================================================
+             BLOQUE 1: LO QUE SE APRENDIÓ (Reconstrucción de la clase)
+             ================================================================== -->
+        <article class="paper-card p-5 sm:p-6" aria-labelledby="block1-title">
+          <div class="flex items-center gap-3 pb-3.5 mb-4 border-b border-slate-200">
+            <span class="w-9 h-9 rounded-xl bg-blue-600 text-white text-sm font-extrabold flex items-center justify-center flex-shrink-0">
+              1
+            </span>
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-blue-700">
+                Bloque 1 • Resumen de la Clase
+              </span>
+              <h3 id="block1-title" class="text-lg sm:text-xl font-extrabold text-slate-900">
+                Lo que se aprendió
+              </h3>
+            </div>
+          </div>
+
+          <div id="plan-learned-summary" class="text-base text-slate-800 leading-relaxed space-y-3.5">
+          </div>
+
+          <!-- Puntos centrales reconstruidos -->
+          <div class="mt-5 p-4 rounded-xl bg-blue-50/70 border border-blue-200">
+            <h4 class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-blue-900 mb-2.5">
+              Ideas principales para recordar:
+            </h4>
+            <ul id="plan-key-takeaways" class="space-y-2 text-sm sm:text-base text-slate-800">
+            </ul>
+          </div>
+        </article>
+
+        <!-- ==================================================================
+             BLOQUE 2: CONCEPTOS CLAVE A TENER EN CUENTA (Glosario estructurado)
+             ================================================================== -->
+        <article class="paper-card p-5 sm:p-6" aria-labelledby="block2-title">
+          <div class="flex items-center gap-3 pb-3.5 mb-4 border-b border-slate-200">
+            <span class="w-9 h-9 rounded-xl bg-indigo-600 text-white text-sm font-extrabold flex items-center justify-center flex-shrink-0">
+              2
+            </span>
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-indigo-700">
+                Bloque 2 • Glosario de la Sesión
+              </span>
+              <h3 id="block2-title" class="text-lg sm:text-xl font-extrabold text-slate-900">
+                Conceptos clave a tener en cuenta
+              </h3>
+            </div>
+          </div>
+
+          <div id="plan-glossary-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          </div>
+        </article>
+
+        <!-- ==================================================================
+             BLOQUE 3: QUÉ ESTUDIAR Y REFORZAR PARA LA PRÓXIMA CLASE
+             (Vacíos detectados + Checklists interactivos)
+             ================================================================== -->
+        <article class="paper-card p-5 sm:p-6" aria-labelledby="block3-title">
+          <div class="flex items-center gap-3 pb-3.5 mb-4 border-b border-slate-200">
+            <span class="w-9 h-9 rounded-xl bg-amber-600 text-white text-sm font-extrabold flex items-center justify-center flex-shrink-0">
+              3
+            </span>
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-amber-700">
+                Bloque 3 • Plan de Acción Pre-Clase
+              </span>
+              <h3 id="block3-title" class="text-lg sm:text-xl font-extrabold text-slate-900">
+                Qué estudiar y reforzar para la próxima clase
+              </h3>
+            </div>
+          </div>
+
+          <!-- Vacíos detectados en los apuntes rápidos -->
+          <div class="mb-5 p-4 rounded-xl bg-amber-50 border border-amber-300">
+            <div class="flex items-center gap-2 mb-2">
+              <svg class="w-5 h-5 text-amber-700 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <h4 class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-amber-900">
+                Vacíos o dudas detectadas en tus apuntes:
+              </h4>
+            </div>
+            <ul id="plan-gaps-list" class="space-y-2 text-sm text-amber-950 pl-1">
+            </ul>
+          </div>
+
+          <!-- Lista de Tareas de Refuerzo con Checklists Interactivos -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="text-sm sm:text-base font-extrabold text-slate-900">
+                Lista de estudio paso a paso (Checklist interactivo):
+              </h4>
+              <span class="text-xs font-semibold text-slate-500">Toca para marcar</span>
+            </div>
+            <div id="plan-checklist-container" class="space-y-3">
+            </div>
+
+            <!-- Agregar tarea personalizada de refuerzo -->
+            <form id="form-add-custom-task" class="mt-4 flex gap-2">
+              <input
+                id="input-custom-task"
+                type="text"
+                placeholder="Agregar otra tarea de repaso para esta materia..."
+                class="flex-1 px-4 py-2.5 rounded-xl bg-slate-50 focus:bg-white border border-slate-300 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                type="submit"
+                class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold transition flex-shrink-0"
+              >
+                + Añadir
+              </button>
+            </form>
+          </div>
+        </article>
+
+        <!-- ==================================================================
+             BLOQUE 4: TARJETAS DE MEMORIA (FLASHCARDS 3D INTERACTIVAS)
+             ================================================================== -->
+        <article class="paper-card p-5 sm:p-6" aria-labelledby="block4-title">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-3.5 mb-4 border-b border-slate-200">
+            <div class="flex items-center gap-3">
+              <span class="w-9 h-9 rounded-xl bg-emerald-600 text-white text-sm font-extrabold flex items-center justify-center flex-shrink-0">
+                4
+              </span>
+              <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">
+                  Bloque 4 • Práctica de Memoria Activa
+                </span>
+                <h3 id="block4-title" class="text-lg sm:text-xl font-extrabold text-slate-900">
+                  Tarjetas de Memoria (Flashcards)
+                </h3>
+              </div>
+            </div>
+            <button
+              id="btn-reset-flashcards"
+              type="button"
+              class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 transition"
+            >
+              <svg class="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span>Voltear todas</span>
+            </button>
+          </div>
+
+          <p class="text-sm text-slate-600 mb-4">
+            Toca cualquiera de las 3 tarjetas para girarla y comprobar la respuesta explicada.
+          </p>
+
+          <!-- Grid de 3 Flashcards Interactivas -->
+          <div id="plan-flashcards-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         VISTA 3: "MIS CLASES" (HISTORIAL, BUSCADOR Y SEGUIMIENTO)
+         ====================================================================== -->
+    <section id="view-mis-clases" class="view-section" aria-labelledby="heading-mis-clases">
+
+      <!-- Cabecera y Resumen Estadístico -->
+      <div class="paper-card p-5 sm:p-6 mb-5">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-blue-700">
+              Historial de Estudio
+            </span>
+            <h2 id="heading-mis-clases" class="text-xl sm:text-2xl font-extrabold text-slate-900">
+              Mis Clases Guardadas
+            </h2>
+          </div>
+          <button
+            id="btn-history-new-class"
+            type="button"
+            class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold transition"
+          >
+            + Capturar Nueva Clase
+          </button>
+        </div>
+
+        <!-- Métricas Globales -->
+        <div class="grid grid-cols-3 gap-3">
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-center">
+            <div id="stat-total-classes" class="text-2xl font-extrabold text-slate-900">0</div>
+            <div class="text-xs font-semibold text-slate-600 mt-0.5">Clases</div>
+          </div>
+          <div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-center">
+            <div id="stat-completed-tasks" class="text-2xl font-extrabold text-emerald-700">0</div>
+            <div class="text-xs font-semibold text-emerald-800 mt-0.5">Tareas Listas</div>
+          </div>
+          <div class="p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-center">
+            <div id="stat-avg-progress" class="text-2xl font-extrabold text-blue-700">0%</div>
+            <div class="text-xs font-semibold text-blue-800 mt-0.5">Avance Total</div>
+          </div>
+        </div>
+
+        <!-- Buscador y Filtros -->
+        <div class="mt-4 flex flex-col sm:flex-row gap-2.5">
+          <div class="relative flex-1">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              id="input-search-history"
+              type="search"
+              placeholder="Buscar por materia, tema o concepto..."
+              class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 focus:bg-white border border-slate-300 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button type="button" data-filter="all" class="history-filter-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white transition">
+              Todas
+            </button>
+            <button type="button" data-filter="pending" class="history-filter-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+              En curso
+            </button>
+            <button type="button" data-filter="completed" class="history-filter-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+              Completadas
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenedor de Lista de Clases Guardadas -->
+      <div id="history-list-container" class="space-y-4">
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         PIE DE PÁGINA ESTILIZADO CON CRÉDITOS OFICIALES (OBLIGATORIO)
+         ====================================================================== -->
+    <footer class="mt-10 mb-4">
+      <div class="paper-card p-5 bg-white">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+          <div class="space-y-1">
+            <div class="text-xs font-extrabold uppercase tracking-wider text-blue-700">
+              Créditos Oficiales de Autoría y Desarrollo
+            </div>
+            <p class="text-sm sm:text-base font-bold text-slate-900">
+              Autores / Desarrolladores:
+              <span class="text-blue-700">Iván Andrés Urbano Rivera</span>
+              <span class="text-slate-400 mx-1">y</span>
+              <span class="text-emerald-700">Lucy Adriana Muñoz Cabrera</span>
+            </p>
+            <p class="text-xs text-slate-600">
+              MemoClass AI v1.0 — Progressive Web App (PWA) Educativa impulsada por Inteligencia Artificial
+            </p>
+          </div>
+          <button
+            id="btn-footer-credits"
+            type="button"
+            class="px-4 py-2.5 rounded-xl text-xs font-bold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 transition flex-shrink-0"
+          >
+            Ver Proyecto y Créditos
+          </button>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- ========================================================================
+       BARRA DE NAVEGACIÓN INFERIOR FIJA (BOTTOM NAVIGATION NATIVA ANDROID)
+       ======================================================================== -->
+  <nav class="bottom-nav-surface fixed bottom-0 left-0 right-0 z-40" aria-label="Navegación principal">
+    <div class="max-w-md mx-auto px-2 h-16 grid grid-cols-3 gap-1">
+      <!-- Tab 1: Nueva Clase -->
+      <button
+        type="button"
+        data-target-view="view-nueva-clase"
+        class="nav-item active flex flex-col items-center justify-center gap-0.5 focus:outline-none"
+      >
+        <div class="nav-pill">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
+        </div>
+        <span class="text-xs font-bold">Nueva Clase</span>
+      </button>
+
+      <!-- Tab 2: Plan de Estudio -->
+      <button
+        type="button"
+        data-target-view="view-plan-estudio"
+        class="nav-item flex flex-col items-center justify-center gap-0.5 focus:outline-none"
+      >
+        <div class="nav-pill relative">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+          <span id="nav-badge-plan" class="hidden absolute top-0.5 right-2 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
+        </div>
+        <span class="text-xs font-bold">Plan de Estudio</span>
+      </button>
+
+      <!-- Tab 3: Mis Clases -->
+      <button
+        type="button"
+        data-target-view="view-mis-clases"
+        class="nav-item flex flex-col items-center justify-center gap-0.5 focus:outline-none"
+      >
+        <div class="nav-pill flex items-center gap-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+          <span id="nav-badge-count" class="px-1.5 py-0.2 rounded-full text-[11px] font-extrabold bg-blue-600 text-white">0</span>
+        </div>
+        <span class="text-xs font-bold">Mis Clases</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ========================================================================
+       MODAL 1: "ACERCA DE / CRÉDITOS" Y PLANTEAMIENTO DEL PROBLEMA (OBLIGATORIO)
+       ======================================================================== -->
+  <div id="modal-credits" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-credits-title">
+    <div class="paper-card w-full max-w-lg p-5 sm:p-6 bg-white shadow-2xl space-y-5 my-auto max-h-[90vh] overflow-y-auto">
+      <div class="flex items-start justify-between gap-3 border-b border-slate-200 pb-4">
+        <div class="flex items-center gap-3">
+          <img src="./icons/icon.svg" alt="MemoClass AI" class="w-11 h-11 rounded-xl shadow-xs" />
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-blue-700">
+              Información Oficial del Proyecto
+            </span>
+            <h2 id="modal-credits-title" class="text-lg sm:text-xl font-extrabold text-slate-900">
+              Acerca de MemoClass AI y Créditos
+            </h2>
+          </div>
+        </div>
+        <button id="btn-close-credits-modal" type="button" class="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition font-bold" aria-label="Cerrar ventana">
+          ✕
+        </button>
+      </div>
+
+      <!-- Autores / Desarrolladores Destacados -->
+      <div class="p-4 rounded-2xl bg-blue-50/70 border border-blue-200 space-y-3">
+        <div class="text-xs font-extrabold uppercase tracking-wider text-blue-800">
+          Autores y Desarrolladores del Proyecto
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="p-3.5 rounded-xl bg-white border border-blue-200 flex items-center gap-3 shadow-2xs">
+            <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-extrabold text-xs flex-shrink-0">
+              IU
+            </div>
+            <div>
+              <div class="text-sm font-extrabold text-slate-900">Iván Andrés Urbano Rivera</div>
+              <div class="text-xs text-blue-700 font-semibold">Autor y Desarrollador</div>
+            </div>
+          </div>
+          <div class="p-3.5 rounded-xl bg-white border border-emerald-200 flex items-center gap-3 shadow-2xs">
+            <div class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-extrabold text-xs flex-shrink-0">
+              LM
+            </div>
+            <div>
+              <div class="text-sm font-extrabold text-slate-900">Lucy Adriana Muñoz Cabrera</div>
+              <div class="text-xs text-emerald-700 font-semibold">Autora y Desarrolladora</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Planteamiento del Problema -->
+      <div class="space-y-2">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700">
+          Contexto y Planteamiento del Problema
+        </h3>
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 leading-relaxed space-y-2.5">
+          <p>
+            <strong class="text-slate-900">El Problema:</strong> Los estudiantes sufren problemas de retención de memoria y pérdida de información porque durante las clases deben prestar atención y tomar apuntes <em>"a la ligera"</em> simultáneamente, lo que genera notas incompletas y difíciles de entender después.
+          </p>
+          <p>
+            <strong class="text-slate-900">La Solución (MemoClass AI):</strong> Esta aplicación utiliza Inteligencia Artificial para transformar esos apuntes rápidos y desordenados de cada clase en un plan de estudio estructurado que indica exactamente:
+          </p>
+          <ul class="list-disc list-inside space-y-1 text-slate-800 font-semibold pl-1">
+            <li><strong>Qué se aprendió:</strong> Resumen claro que reconstruye la clase.</li>
+            <li><strong>Conceptos clave a tener en cuenta:</strong> Glosario estructurado.</li>
+            <li><strong>Qué estudiar y reforzar:</strong> Vacíos detectados y checklist interactivo.</li>
+            <li><strong>Tarjetas de Memoria (Flashcards):</strong> 3 tarjetas interactivas 3D.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pt-1 flex justify-end">
+        <button id="btn-close-credits-bottom" type="button" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold transition">
+          Entendido
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 2: CONFIGURACIÓN DE MOTOR DE IA (GEMINI API + MODO DEMOSTRACIÓN)
+       ======================================================================== -->
+  <div id="modal-api" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-api-title">
+    <div class="paper-card w-full max-w-md p-5 sm:p-6 bg-white shadow-2xl space-y-4 my-auto">
+      <div class="flex items-start justify-between gap-3 border-b border-slate-200 pb-3.5">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-700">
+            Motor de Inteligencia Artificial
+          </span>
+          <h2 id="modal-api-title" class="text-lg sm:text-xl font-extrabold text-slate-900">
+            Configuración de Google Gemini API
+          </h2>
+        </div>
+        <button id="btn-close-api-modal" type="button" class="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition font-bold" aria-label="Cerrar ventana">
+          ✕
+        </button>
+      </div>
+
+      <p class="text-sm text-slate-600 leading-relaxed">
+        MemoClass AI se conecta mediante <code>fetch</code> al modelo <strong>Google Gemini (<code>gemini-2.5-flash</code>)</strong>. Si no ingresas una API Key o estás sin internet, funciona automáticamente con el <strong>Modo Simulación Inteligente Local</strong>.
+      </p>
+
+      <div>
+        <label for="input-api-key" class="block text-sm font-bold text-slate-800 mb-1.5">
+          Clave de API de Google Gemini (Opcional)
+        </label>
+        <input
+          id="input-api-key"
+          type="password"
+          placeholder="AIzaSy..."
+          class="w-full px-4 py-2.5 rounded-xl bg-slate-50 focus:bg-white border border-slate-300 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div id="api-status-box" class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs sm:text-sm text-emerald-900">
+        Estado actual: <strong>Modo Simulación Inteligente Local Activo</strong> (100% funcional sin llave externa).
+      </div>
+
+      <div class="flex flex-wrap items-center justify-end gap-2 pt-2">
+        <button id="btn-clear-api-key" type="button" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs sm:text-sm font-bold transition">
+          Usar Modo Simulación
+        </button>
+        <button id="btn-save-api-key" type="button" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold transition">
+          Guardar Configuración
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 3: ASISTENTE DE INSTALACIÓN PWA (MOTO G / ANDROID / ESCRITORIO)
+       ======================================================================== -->
+  <div id="modal-install" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-install-title">
+    <div class="paper-card w-full max-w-md p-5 sm:p-6 bg-white shadow-2xl space-y-4 my-auto">
+      <div class="flex items-start justify-between gap-3 border-b border-slate-200 pb-3.5">
+        <div class="flex items-center gap-2.5">
+          <img src="./icons/icon.svg" alt="MemoClass AI" class="w-10 h-10 rounded-xl" />
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-blue-700">
+              Aplicación Instalable PWA
+            </span>
+            <h2 id="modal-install-title" class="text-lg font-extrabold text-slate-900">
+              Instalar MemoClass AI en tu celular
+            </h2>
+          </div>
+        </div>
+        <button id="btn-close-install-modal" type="button" class="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition font-bold">
+          ✕
+        </button>
+      </div>
+
+      <div class="space-y-2.5 text-sm text-slate-600 leading-relaxed">
+        <p>
+          <strong>MemoClass AI</strong> se puede instalar en tu teléfono Android (como Moto G) o en tu computador para abrirse como una aplicación nativa:
+        </p>
+        <ol class="list-decimal list-inside space-y-1.5 bg-slate-50 p-4 rounded-xl border border-slate-200 text-slate-800 font-medium">
+          <li>En <strong>Chrome para Android</strong>, toca el menú de tres puntos <strong>(⋮)</strong> arriba a la derecha.</li>
+          <li>Elige <strong>"Instalar aplicación"</strong> o <strong>"Agregar a la pantalla principal"</strong>.</li>
+        </ol>
+      </div>
+
+      <div class="flex justify-end">
+        <button id="btn-confirm-install-modal" type="button" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold transition">
+          Entendido
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lógica Principal Modular de la Aplicación -->
+  <script type="module" src="./app.js?v=3.0"></script>
+</body>
+</html>

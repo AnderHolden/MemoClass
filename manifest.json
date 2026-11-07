@@ -1,0 +1,84 @@
+{
+  "name": "MemoClass AI - Plan de Estudio Inteligente",
+  "short_name": "MemoClass AI",
+  "description": "Aplicación educativa con IA que transforma apuntes rápidos y desordenados de clase en un plan de estudio estructurado, conceptos clave, tareas de refuerzo y flashcards interactivas. Autores: Iván Andrés Urbano Rivera y Lucy Adriana Muñoz Cabrera.",
+  "author": "Iván Andrés Urbano Rivera y Lucy Adriana Muñoz Cabrera",
+  "developers": [
+    {
+      "name": "Iván Andrés Urbano Rivera",
+      "role": "Autor y Desarrollador Full-Stack / UX-UI"
+    },
+    {
+      "name": "Lucy Adriana Muñoz Cabrera",
+      "role": "Autora y Desarrolladora Full-Stack / UX-UI"
+    }
+  ],
+  "version": "1.0.0",
+  "lang": "es-CO",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0F172A",
+  "background_color": "#F5F4F0",
+  "categories": [
+    "education",
+    "productivity",
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Nueva Clase",
+      "short_name": "Nueva Clase",
+      "description": "Capturar apuntes rápidos o por voz",
+      "url": "./index.html?view=nueva-clase",
+      "icons": [
+        {
+          "src": "./icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Mis Clases",
+      "short_name": "Historial",
+      "description": "Ver planes de estudio guardados",
+      "url": "./index.html?view=mis-clases",
+      "icons": [
+        {
+          "src": "./icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}
